@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://10.0.2.2:5000/api'; // Android emülatör için localhost
+const API_BASE_URL = 'https://cinesearch-backend-1h9k.onrender.com/api'; // Android emülatör için localhost
 
 const api = axios.create({
   baseURL: API_BASE_URL,

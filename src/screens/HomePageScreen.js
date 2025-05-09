@@ -51,7 +51,7 @@ export default function HomePage({ navigation }) {
   useEffect(() => {
     const fetchPopularMovies = async () => {
       try {
-        const response = await axios.get('http://10.0.2.2:5000/api/tmdb/popular/movies');
+        const response = await axios.get('https://cinesearch-backend-1h9k.onrender.com/api/tmdb/popular/movies');
         setPopularMovies(response.data);
       } catch (error) {
         console.error('Error fetching popular movies:', error);
@@ -104,14 +104,14 @@ export default function HomePage({ navigation }) {
     let tvs = [];
 
     try {
-      const movieResponse = await axios.get(`http://10.0.2.2:5000/api/tmdb/search/movies?query=${searchQuery}`);
+      const movieResponse = await axios.get(`https://cinesearch-backend-1h9k.onrender.com/api/tmdb/search/movies?query=${searchQuery}`);
       movies = movieResponse.data;
     } catch (err) {
       console.warn('Film arama başarısız:', err.message);
     }
 
     try {
-      const tvResponse = await axios.get(`http://10.0.2.2:5000/api/tmdb/search/tv?query=${searchQuery}`);
+      const tvResponse = await axios.get(`https://cinesearch-backend-1h9k.onrender.com/api/tmdb/search/tv?query=${searchQuery}`);
       tvs = tvResponse.data;
     } catch (err) {
       console.warn('Dizi arama başarısız:', err.message);

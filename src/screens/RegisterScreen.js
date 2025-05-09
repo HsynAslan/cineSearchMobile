@@ -38,7 +38,7 @@ const RegisterScreen = ({ navigation }) => {
 
   const handleRegister = async () => {
     try {
-      const response = await fetch('http://10.0.2.2:5000/api/auth/register', {
+      const response = await fetch('https://cinesearch-backend-1h9k.onrender.com/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
