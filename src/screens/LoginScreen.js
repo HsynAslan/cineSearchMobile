@@ -1,89 +1,144 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import { useTranslation } from 'react-i18next';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Dimensions,
+} from 'react-native';
+import Video from 'react-native-video';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import API_BASE_URL from '../utils/config';
-const LoginScreen = ({ navigation }) => {
-  const { t } = useTranslation();
+
+const { width, height } = Dimensions.get('window');
+
+export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
 
   const handleLogin = async () => {
+    setError('');
+    setMessage('');
+
     try {
-      const response = await axios.post('http://${API_BASE_URL}/api/login', {
+      const res = await axios.post('http://10.0.2.2:5000/api/auth/login', {
         email,
         password,
       });
 
-      if (response.data.success && response.data.token) {
-        await AsyncStorage.setItem('userToken', response.data.token);
-        Alert.alert(t('success'), t('login_success'));
-        navigation.navigate('Profile'); // veya ana ekran
-      } else {
-        Alert.alert(t('error'), response.data.message || t('login_failed'));
-      }
-    } catch (error) {
-      console.error(error);
-      Alert.alert(t('error'), t('something_went_wrong'));
+      await AsyncStorage.setItem('token', res.data.token);
+      setMessage(res.data.message || 'Giriş başarılı!');
+
+      setTimeout(() => navigation.replace('Profile'), 1000);
+    } catch (err) {
+      const msg = err.response?.data?.message || 'Giriş yapılamadı.';
+      setError(msg);
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>{t('login')}</Text>
-      <TextInput
-        style={styles.input}
-        placeholder={t('email')}
-        placeholderTextColor="#aaa"
-        onChangeText={setEmail}
-        keyboardType="email-address"
+      <Video
+        source={require('../assets/videos/background.mp4')}
+        style={styles.backgroundVideo}
+        muted
+        repeat
+        resizeMode="cover"
+        rate={1.0}
+        ignoreSilentSwitch="obey"
       />
-      <TextInput
-        style={styles.input}
-        placeholder={t('password')}
-        placeholderTextColor="#aaa"
-        secureTextEntry
-        onChangeText={setPassword}
-      />
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>{t('login')}</Text>
-      </TouchableOpacity>
+
+      <View style={styles.overlay}>
+        <Text style={styles.header}>Giriş Yap</Text>
+
+        {error ? <Text style={styles.error}>{error}</Text> : null}
+        {message ? <Text style={styles.success}>{message}</Text> : null}
+
+        <TextInput
+          placeholder="E-posta"
+          value={email}
+          onChangeText={setEmail}
+          style={styles.input}
+          placeholderTextColor="#999"
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+
+        <TextInput
+          placeholder="Şifre"
+          value={password}
+          onChangeText={setPassword}
+          style={styles.input}
+          placeholderTextColor="#999"
+          secureTextEntry
+        />
+
+        <TouchableOpacity onPress={handleLogin} style={styles.button}>
+          <Text style={styles.buttonText}>Giriş Yap</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+          <Text style={styles.link}>Hesabınız yok mu? Kayıt Olun</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
-};
-
-export default LoginScreen;
+}
 
 const styles = StyleSheet.create({
-  container: {
+  container: { flex: 1 },
+  backgroundVideo: {
+    width: width,
+    height: height,
+    position: 'absolute',
+  },
+  overlay: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: 'rgba(0,0,0,0.65)',
     justifyContent: 'center',
-    padding: 20,
+    padding: 24,
   },
   header: {
     fontSize: 28,
-    fontWeight: 'bold',
-    color: '#e50914',
-    marginBottom: 20,
+    color: '#fff',
+    fontWeight: '700',
     textAlign: 'center',
+    marginBottom: 24,
   },
   input: {
-    backgroundColor: '#222',
-    color: '#fff',
-    padding: 15,
-    marginBottom: 15,
-    borderRadius: 8,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 14,
+    marginBottom: 12,
+    fontSize: 16,
   },
   button: {
-    backgroundColor: '#e50914',
-    padding: 15,
-    borderRadius: 8,
+    backgroundColor: '#4CAF50',
+    padding: 14,
+    borderRadius: 10,
     alignItems: 'center',
+    marginTop: 8,
   },
-  buttonText: {
+  buttonText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
+  link: {
     color: '#fff',
-    fontWeight: 'bold',
+    textAlign: 'center',
+    marginTop: 16,
+    textDecorationLine: 'underline',
+  },
+  error: {
+    color: 'salmon',
+    textAlign: 'center',
+    marginBottom: 10,
+    fontWeight: '500',
+  },
+  success: {
+    color: 'lightgreen',
+    textAlign: 'center',
+    marginBottom: 10,
+    fontWeight: '500',
   },
 });
