@@ -8,6 +8,7 @@ import HomeScreen from './src/screens/HomeScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
+import HomePageScreen from './src/screens/HomePageScreen';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -19,6 +20,7 @@ export default function App() {
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Register" component={RegisterScreen} />
           <Stack.Screen name="Profile" component={ProfileScreen} />
+           <Stack.Screen name="HomePage" component={HomePageScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </I18nextProvider>

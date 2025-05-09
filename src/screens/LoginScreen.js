@@ -32,7 +32,7 @@ export default function LoginScreen({ navigation }) {
       await AsyncStorage.setItem('token', res.data.token);
       setMessage(res.data.message || 'Giriş başarılı!');
 
-      setTimeout(() => navigation.replace('Profile'), 1000);
+      setTimeout(() => navigation.replace('HomePage'), 1000);
     } catch (err) {
       const msg = err.response?.data?.message || 'Giriş yapılamadı.';
       setError(msg);
